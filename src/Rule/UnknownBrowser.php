@@ -10,6 +10,8 @@
 
 namespace CaSecurity\Rule;
 
+use CaSecurity\Event;
+
 class UnknownBrowser extends AbstractRule
 {
 	protected $defaultPatterns = array(
@@ -64,6 +66,7 @@ class UnknownBrowser extends AbstractRule
 		$event->setName(Event::EVENT_REPORT);
 		$event->setTarget($this);
 		$event->setParam('message', "Invalid user agent '".$userAgent."'");
+		$event->setParam('request', $request);
 		$this->getEventManager()->trigger($event);
 	}
 	
