@@ -12,28 +12,28 @@ namespace CaSecurity\Rule;
 
 class UnknownBrowser extends AbstractRule
 {
-	protected $browserPatterns = array(
+	protected $defaultPatterns = array(
 		".*Chrome.*",
 		".*Firefox.*",
 		".*IE.*",
 		".*Safari.*",
 	);
 	
-	protected $userPatterns = array();
+	protected $patterns = array();
 	
 
 	/**
 	 * @return the $userPatterns
 	 */
-	public function getUserPatterns() {
+	public function getPatterns() {
 		return $this->userPatterns;
 	}
 
 	/**
 	 * @param multitype: $userPatterns
 	 */
-	public function setUserPatterns($userPatterns) {
-		$this->userPatterns = $userPatterns;
+	public function setPatterns($patterns) {
+		$this->patterns = $patterns;
 	}
 
 	/* (non-PHPdoc)
@@ -41,7 +41,7 @@ class UnknownBrowser extends AbstractRule
 	 */
 	public function verify(\Zend\Http\PhpEnvironment\Request $request) {
 		$userAgent = $request->getHeader('useragent', false)->getFieldValue();
-		$patterns = array_merge($this->browserPatterns, $this->userPatterns);
+		$patterns = array_merge($this->defaultPatterns, $this->patterns);
 
 		foreach($patterns as $pattern) {
 			if(!preg_match("/".$pattern."/", $userAgent)) {
