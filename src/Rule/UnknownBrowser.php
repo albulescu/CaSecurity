@@ -13,10 +13,20 @@ namespace CaSecurity\Rule;
 class UnknownBrowser extends AbstractRule
 {
 	protected $defaultPatterns = array(
-		".*Chrome.*",
-		".*Firefox.*",
-		".*IE.*",
-		".*Safari.*",
+		'chrome',
+		'firefox',
+		'msie',
+		'safari',
+		'opera',
+		'netscape',
+		'seamonkey',
+		'konqueror',
+		'gecko',
+		'navigator',
+		'mosaic',
+		'lynx',
+		'amaya',
+		'omniweb'
 	);
 	
 	protected $patterns = array();
@@ -40,19 +50,21 @@ class UnknownBrowser extends AbstractRule
 	 * @see \CaSecurity\Rule\AbstractRule::verify()
 	 */
 	public function verify(\Zend\Http\PhpEnvironment\Request $request) {
+		
 		$userAgent = $request->getHeader('useragent', false)->getFieldValue();
 		$patterns = array_merge($this->defaultPatterns, $this->patterns);
 
 		foreach($patterns as $pattern) {
-			if(!preg_match("/".$pattern."/", $userAgent)) {
-				$event = new Event();
-				$event->setName(Event::EVENT_REPORT);
-				$event->setTarget($this);
-				$event->setParam('message', "Invalid user agent '".$userAgent."'");
-				$this->getEventManager()->trigger($event);
-				break;
+			if(strpos(strtolower($userAgent), $pattern) !== false) {
+				return;
 			}
 		}
+		
+		$event = new Event();
+		$event->setName(Event::EVENT_REPORT);
+		$event->setTarget($this);
+		$event->setParam('message', "Invalid user agent '".$userAgent."'");
+		$this->getEventManager()->trigger($event);
 	}
 	
 	/**
@@ -60,6 +72,6 @@ class UnknownBrowser extends AbstractRule
 	 * @see \CaSecurity\Rule\AbstractRule::getName()
 	 */
 	public function getName() {
-		return 'unknown_browser';
+		return strtolower(get_class($this));
 	}
 }
