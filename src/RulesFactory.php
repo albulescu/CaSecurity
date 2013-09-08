@@ -23,30 +23,42 @@ class RulesFactory implements FactoryInterface
 		
 		$rules = new Rules();
 		
-		$configuration	= $services->get('Config');
+		//create reporter listener
+		$reporter = new ReportListener();
+		$reporter->setServiceLocator($services);
 		
-		if(isset($configuration['CaSecurity']) && is_array($configuration['CaSecurity'])) {
+		//attach the reporter listener to the rules em
+		$rules->getEventManager()->attach($reporter);
+		
+		$config	= $services->get('Config');
+		
+		if(isset($config['CaSecurity'])) {
 			
-			$ruleProvider = $services->get('CaSecurity/RuleProvider');
+			$config = $config['CaSecurity'];
 			
-			foreach($configuration['CaSecurity'] as $rule => $rule_options)
+			if(isset($config['rules']) && is_array($config['rules']))
 			{
-				if(is_numeric($rule)) {
-					$rule = $rule_options;
-					$rule_options = array();
+				$ruleProvider = $services->get('CaSecurity/RuleProvider');
+				
+				foreach($config['rules'] as $rule => $rule_options)
+				{
+					if(is_numeric($rule)) {
+						$rule = $rule_options;
+						$rule_options = array();
+					}
+					
+					if(!$ruleProvider->has($rule)) {
+						throw new Exception(sprintf(
+								"Invalid rule '%s'",
+								$rule
+						));
+					}
+					
+					$rule = $ruleProvider->get($rule);
+					$rule->setFromArray($rule_options);
+					
+					$rules->addRule($rule);
 				}
-				
-				if(!$ruleProvider->has($rule)) {
-					throw new Exception(sprintf(
-							"Invalid rule '%s'",
-							$rule
-					));
-				}
-				
-				$rule = $ruleProvider->get($rule);
-				$rule->setFromArray($rule_options);
-				
-				$rules->addRule($rule);
 			}
 		}
 		

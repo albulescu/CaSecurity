@@ -12,7 +12,7 @@ namespace CaSecurity;
 
 use CaSecurity\Rule\AbstractRule;
 use Zend\EventManager\EventManager;
-use CaSecurity\Rule\Event;
+use CaSecurity\Event;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -29,9 +29,6 @@ class Rules implements EventManagerAwareInterface
 	 * @see \Zend\EventManager\EventManagerAwareInterface::setEventManager()
 	 */
 	public function setEventManager(EventManagerInterface $eventManager) {
-
-		$eventManager->attach(Event::EVENT_REPORT, array($this,'onReport'));
-		
 		$this->eventManager = $eventManager;
 	}
 
@@ -64,28 +61,6 @@ class Rules implements EventManagerAwareInterface
 	 */
 	public function setRequest( Request $request) {
 		$this->request = $request;
-	}
-	
-	/**
-	 * Before verify a rule
-	 * @param Event $event
-	 */
-	public function onVerify( Event $event )
-	{
-		if(!$event->propagationIsStopped()) {
-			return;
-		}
-		
-		//do nothing
-	}
-	
-	public function onReport( Event $event )
-	{
-		if(!$event->propagationIsStopped()) {
-			return;
-		}
-		
-		//todo: Report
 	}
 	
 	/**
