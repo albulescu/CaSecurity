@@ -1,4 +1,4 @@
-CaSecurity
+CaSecurity ( DEV 0.1 )
 ===========
 
 This is a Zend Framework 2 Security Module. Install it and activate the rules.
