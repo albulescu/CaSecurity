@@ -5,13 +5,17 @@ This is a Zend Framework 2 Security Module. Install it and activate the rules.
 To activate the rule place in your configuration file the key *CaSecurity*
 
 <pre>
-'CaSecurity' => array(
-	'unknownbrowser' => array(
-		'patterns' => array(
-			'.*Links.*',//This will allow a browser with name Links ( Check UserAgent )
+'CaSecurity'=>array(
+	'options'=>array(
+		'log'=>APP_PATH.'/log/security.log'
+	),
+	'rules'=>array(
+    	'unknownbrowser',
+    	'tomanyrequests' => array(
+			'interval' => 3600
 		)
 	)
-)
+),
 </pre>
 
 ##Available Rules
