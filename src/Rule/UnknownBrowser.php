@@ -53,7 +53,13 @@ class UnknownBrowser extends AbstractRule
 	 */
 	public function verify(\Zend\Http\PhpEnvironment\Request $request) {
 		
-		$userAgent = $request->getHeader('useragent', false)->getFieldValue();
+	    $userAgent = 'Unknown';
+		$userAgentHeader = $request->getHeader('useragent', false);
+		
+		if( $userAgentHeader ) {
+		  $userAgent = $userAgentHeader->getFieldValue();
+		}
+		
 		$patterns = array_merge($this->defaultPatterns, $this->patterns);
 
 		foreach($patterns as $pattern) {
