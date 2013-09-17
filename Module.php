@@ -45,7 +45,7 @@ class Module implements ConfigProviderInterface
 	public function getAutoloaderConfig()
 	{
 		return array(
-				'Zend\Loader\StandardAutoloader' => array(
+				'Ca\Loader\StandardToClassMapLoader' => array(
 						'namespaces' => array(
 								'CaSecurity' => __DIR__ . '/src',
 						),
